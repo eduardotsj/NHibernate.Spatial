@@ -70,15 +70,12 @@ namespace NHibernate.Spatial.Type
             // correctly serialized by PostGisWriter (see issue #66)
             // TODO: Is there a way of getting the ordinates directly from the geometry?
             var ordinates = Ordinates.XY;
-            var interiorPoint = geometry.InteriorPoint;
-            if (!interiorPoint.IsEmpty && !double.IsNaN(interiorPoint.Z))
+            var basePoint = geometry.Coordinate;
+            if (basePoint != null && !double.IsNaN(basePoint.Z))
             {
                 ordinates |= Ordinates.Z;
             }
-            if (!interiorPoint.IsEmpty && !double.IsNaN(interiorPoint.M))
-            {
-                ordinates |= Ordinates.M;
-            }
+            // GeoAPI 1.7.5 does not support M ordinate
 
             var postGisWriter = new PostGisWriter
             {
